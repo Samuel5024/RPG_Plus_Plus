@@ -84,11 +84,11 @@ public class PlayerController : MonoBehaviourPun
         // did we hit an enemy?
         if(hit.collider != null && hit.collider.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("read meeeeee");
             // get the enemy and damage them
             Enemy enemy = hit.collider.GetComponent<Enemy>();
             enemy.photonView.RPC("TakeDamage", RpcTarget.MasterClient, damage);
         }
+
         // play attack animation
         weaponAnim.SetTrigger("Attack");
     }
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviourPun
     {
         dead = true;
         rig.bodyType = RigidbodyType2D.Kinematic; // replaces rig.isKinematic = true; 
-
+        sr.enabled = false; // hide player sprite
         transform.position = new Vector3(0, 99, 0);
 
         Vector3 spawnPos = GameManager.instance.spawnPoints[Random.Range(0, GameManager.instance.spawnPoints.Length)].position;
@@ -135,9 +135,11 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(TimeToSpawn);
 
         dead = false;
+        curHp = maxHp; // Reset HP to full
         transform.position = spawnPos;
-        rig.bodyType = RigidbodyType2D.Kinematic;
-        // rig.isKinematic = false;
+        rig.bodyType = RigidbodyType2D.Dynamic; // Restore normal physics
+        rig.linearVelocity = Vector2.zero;
+        sr.enabled = true;
 
         // update the health bar
         headerInfo.photonView.RPC("UpdateHealthBar", RpcTarget.All, curHp);

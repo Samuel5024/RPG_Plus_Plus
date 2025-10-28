@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviourPun
             float dist = Vector3.Distance(transform.position, targetPlayer.transform.position);
 
             // if we're able to attack, do so
-            if(dist < attackRange && Time.time - lastAttackTime >= attackRange)
+            if(dist < attackRange && Time.time - lastAttackTime >= attackRate)
             {
                 Attack();
             }
