@@ -184,4 +184,17 @@ public class PlayerController : MonoBehaviourPun
         // update the UI
         GameUI.instance.UpdateGoldText(gold);
     }
+
+    IEnumerator SpeedBoostTimer (int speedIncreaseAmount, float duration)
+    {
+        yield return new WaitForSeconds(duration); //
+        moveSpeed -= speedIncreaseAmount; // reset speed after timer ends
+    }
+
+    [PunRPC]
+    void SpeedUp(int speedIncreaseAmount, float duration)
+    {
+        moveSpeed += speedIncreaseAmount;
+        StartCoroutine(SpeedBoostTimer(speedIncreaseAmount, duration));
+    }
 }

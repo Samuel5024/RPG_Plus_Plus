@@ -4,13 +4,15 @@ using Photon.Pun;
 public enum PickupType
 {
     Gold,
-    Health
+    Health,
+    Speed
 }
 
 public class Pickup : MonoBehaviourPun
 {
     public PickupType type;
     public int value;
+    public int duration;
 
     // We'll check OnTriggerEnter@d function to detect if a player has picked it up
     //the master client will check this & send the respective RPC to the player who entered the trigger
@@ -29,11 +31,14 @@ public class Pickup : MonoBehaviourPun
             {
                 player.photonView.RPC("GiveGold", player.photonPlayer, value);
             }
-            else if(type == PickupType.Health)
+            else if (type == PickupType.Health)
             {
                 player.photonView.RPC("Heal", player.photonPlayer, value);
             }
-
+            else if (type == PickupType.Speed)
+            {
+                player.photonView.RPC("SpeedUp", player.photonPlayer, value, duration);
+            }
             PhotonNetwork.Destroy(gameObject);
         }
     }
